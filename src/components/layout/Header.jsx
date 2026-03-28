@@ -33,9 +33,10 @@ const Header = ({ search, setSearch, onNearMe, locating, isDetailOpen, onLogoCli
         )}
 
         <button
+          type="button"
           onClick={onNearMe}
           disabled={locating}
-          className="bg-emerald-950 hover:bg-black text-white text-[11px] font-black px-6 py-3.5 rounded-2xl flex items-center gap-2 shadow-xl shrink-0 active:scale-95 transition-all outline-none disabled:opacity-50"
+          className="cursor-pointer bg-emerald-950 hover:bg-black text-white text-[11px] font-black px-6 py-3.5 rounded-2xl flex items-center gap-2 shadow-xl shrink-0 active:scale-95 transition-all outline-none disabled:opacity-50"
         >
           <span>📍</span>
           <span>{locating ? "LOCATING..." : "NEAR ME"}</span>

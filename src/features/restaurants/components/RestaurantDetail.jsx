@@ -1,8 +1,14 @@
-import { toWebsiteHref } from "../utils/websiteUrl";
-
 /**
  * Detail view for a single restaurant: sheet fields per task (address, cuisine, halal, hours, website, phone).
  */
+
+// The sheet often stores "example.com" without https; <a href> needs a proper URL.
+function websiteHrefFromCell(raw) {
+  const t = String(raw || "").trim();
+  if (!t) return "";
+  return /^https?:\/\//i.test(t) ? t : `https://${t}`;
+}
+
 const RestaurantDetail = ({ restaurant, onBack }) => {
   if (!restaurant) return null;
 
@@ -17,7 +23,7 @@ const RestaurantDetail = ({ restaurant, onBack }) => {
   const imageSrc = IMAGE_MAP[restaurant.cuisine] || IMAGE_MAP.default;
   const halalLabel = (restaurant.halal_status || "").trim() || "Halal status not listed";
   const hoursText = (restaurant.hours || "").trim();
-  const websiteHref = toWebsiteHref(restaurant.website || "");
+  const websiteHref = websiteHrefFromCell(restaurant.website);
   const phoneRaw = (restaurant.phone || "").trim();
   const phoneHref = phoneRaw.replace(/\s+/g, "");
 
@@ -33,7 +39,7 @@ const RestaurantDetail = ({ restaurant, onBack }) => {
           type="button"
           onClick={onBack}
           aria-label="Go back to list"
-          className="absolute top-5 left-5 w-10 h-10 bg-white/95 backdrop-blur-md rounded-full shadow-2xl flex items-center justify-center text-lg hover:bg-emerald-50 active:scale-95 transition-all text-slate-800 border border-white/20 z-10"
+          className="absolute top-5 left-5 z-10 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-white/95 text-lg text-slate-800 shadow-2xl backdrop-blur-md transition-all hover:bg-emerald-50 active:scale-95"
         >
           ←
         </button>
@@ -65,7 +71,7 @@ const RestaurantDetail = ({ restaurant, onBack }) => {
         {phoneRaw && (
           <a
             href={`tel:${phoneHref}`}
-            className="inline-flex items-center gap-2 text-emerald-800 font-black text-sm hover:underline"
+            className="inline-flex cursor-pointer items-center gap-2 text-emerald-800 font-black text-sm hover:underline"
           >
             📞 {phoneRaw}
           </a>
@@ -96,7 +102,7 @@ const RestaurantDetail = ({ restaurant, onBack }) => {
             href={websiteHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="block w-full text-center bg-white border-2 border-emerald-900 text-emerald-950 py-4 rounded-[20px] font-black text-[11px] uppercase tracking-widest hover:bg-emerald-50 transition-colors"
+            className="block w-full cursor-pointer text-center bg-white border-2 border-emerald-900 text-emerald-950 py-4 rounded-[20px] font-black text-[11px] uppercase tracking-widest hover:bg-emerald-50 transition-colors"
           >
             Visit website
           </a>
@@ -107,7 +113,7 @@ const RestaurantDetail = ({ restaurant, onBack }) => {
             href={mapsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full flex items-center justify-center gap-3 bg-emerald-950 hover:bg-black text-white py-5 rounded-[24px] font-black shadow-2xl hover:shadow-black/20 transition-all active:scale-95 text-[11px] uppercase tracking-widest"
+            className="w-full flex cursor-pointer items-center justify-center gap-3 bg-emerald-950 hover:bg-black text-white py-5 rounded-[24px] font-black shadow-2xl hover:shadow-black/20 transition-all active:scale-95 text-[11px] uppercase tracking-widest"
           >
             <span>🧭</span> Open in Google Maps
           </a>

@@ -14,10 +14,10 @@ const Filters = ({ cuisine, setCuisine, cuisines = [] }) => {
         <button
           type="button"
           onClick={() => setCuisine("")}
-          className={`px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-tighter whitespace-nowrap transition-all border ${
+          className={`cursor-pointer px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-tighter whitespace-nowrap border transition-[transform,box-shadow,background,border-color,color] duration-300 ease-out active:scale-[0.97] ${
             cuisine === ""
-              ? "bg-[#064e3b] text-white border-[#064e3b] shadow-md shadow-emerald-50"
-              : "bg-white text-slate-400 border-slate-100 hover:border-emerald-200"
+              ? "bg-[#064e3b] text-white border-[#064e3b] shadow-md shadow-emerald-900/10"
+              : "bg-white text-slate-400 border-slate-100 hover:border-emerald-200 hover:text-emerald-800 hover:shadow-sm"
           }`}
         >
           All
@@ -28,10 +28,10 @@ const Filters = ({ cuisine, setCuisine, cuisines = [] }) => {
             type="button"
             key={type}
             onClick={() => setCuisine(type)}
-            className={`px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-tighter whitespace-nowrap transition-all border ${
+            className={`cursor-pointer px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-tighter whitespace-nowrap border transition-[transform,box-shadow,background,border-color,color] duration-300 ease-out active:scale-[0.97] ${
               cuisine === type
-                ? "bg-[#064e3b] text-white border-[#064e3b] shadow-md shadow-emerald-50"
-                : "bg-white text-slate-400 border-slate-100 hover:border-emerald-200"
+                ? "bg-[#064e3b] text-white border-[#064e3b] shadow-md shadow-emerald-900/10"
+                : "bg-white text-slate-400 border-slate-100 hover:border-emerald-200 hover:text-emerald-800 hover:shadow-sm"
             }`}
           >
             {type}

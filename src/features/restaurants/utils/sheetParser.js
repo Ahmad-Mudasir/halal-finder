@@ -1,52 +1,56 @@
 /**
- * sheetParser - Converts raw CSV text from Google Sheets into restaurant objects.
- * Handles quoted fields, trims whitespace.
- * Normalizes lat/lng → latitude/longitude for map compatibility.
+ * Turn the CSV text from Google Sheets into an array of plain JavaScript objects.
  *
- * @param {string} csvText - Raw CSV string from the fetch API
- * @returns {Array<Object>} Array of restaurant objects
+ * Why it looks a bit long: CSV rows can contain commas inside quotes (e.g. "Helsinki, center").
+ * We walk the line character by character so those commas do not break the columns.
+ *
+ * The first line of the CSV is the column names (name, city, latitude, …). Each following line
+ * is one restaurant. We also copy lat/lng into latitude/longitude numbers for the map.
  */
-export const sheetParser = (csvText) => {
-  // Split into lines, remove empty lines, handle \r\n (Windows line endings)
+
+/** Split one CSV line into cell strings, respecting "quoted" fields. */
+function splitLineIntoCells(line) {
+  const cells = [];
+  let current = "";
+  let insideQuotes = false;
+
+  for (let i = 0; i < line.length; i++) {
+    const char = line[i];
+    if (char === '"') {
+      insideQuotes = !insideQuotes;
+    } else if (char === "," && !insideQuotes) {
+      cells.push(current.trim());
+      current = "";
+    } else {
+      current += char;
+    }
+  }
+  cells.push(current.trim());
+  return cells;
+}
+
+export function sheetParser(csvText) {
   const lines = csvText
-    .replace(/\r\n/g, '\n')
-    .replace(/\r/g, '\n')
-    .split('\n')
+    .replace(/\r\n/g, "\n")
+    .replace(/\r/g, "\n")
+    .split("\n")
     .filter(Boolean);
 
   if (lines.length < 2) return [];
 
-  const headers = lines[0].split(',').map((h) => h.trim().replace(/^"|"$/g, ''));
+  const headerRow = lines[0].split(",").map((h) => h.trim().replace(/^"|"$/g, ""));
 
   return lines.slice(1).map((line) => {
-    // Regex handles quoted fields that may contain commas
-    const values = [];
-    let current = '';
-    let inQuotes = false;
-
-    for (let i = 0; i < line.length; i++) {
-      const char = line[i];
-      if (char === '"') {
-        inQuotes = !inQuotes;
-      } else if (char === ',' && !inQuotes) {
-        values.push(current.trim());
-        current = '';
-      } else {
-        current += char;
-      }
-    }
-    values.push(current.trim()); // push last field
-
-    const obj = {};
-    headers.forEach((header, i) => {
-      obj[header] = (values[i] || '').replace(/^"|"$/g, '').trim();
+    const cells = splitLineIntoCells(line);
+    const row = {};
+    headerRow.forEach((columnName, i) => {
+      row[columnName] = (cells[i] || "").replace(/^"|"$/g, "").trim();
     });
 
-    // Normalize: support both 'lat'/'lng' and 'latitude'/'longitude' column names
     return {
-      ...obj,
-      latitude: Number(obj.latitude || obj.lat || 0),
-      longitude: Number(obj.longitude || obj.lng || 0),
+      ...row,
+      latitude: Number(row.latitude || row.lat || 0),
+      longitude: Number(row.longitude || row.lng || 0),
     };
   });
-};
+}
