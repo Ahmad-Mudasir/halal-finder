@@ -1,6 +1,7 @@
 /**
  * Detail view for a single restaurant: sheet fields per task (address, cuisine, halal, hours, website, phone).
  */
+import { getCuisineImage } from "../constants/cuisineImages";
 
 // The sheet often stores "example.com" without https; <a href> needs a proper URL.
 function websiteHrefFromCell(raw) {
@@ -12,15 +13,8 @@ function websiteHrefFromCell(raw) {
 const RestaurantDetail = ({ restaurant, onBack }) => {
   if (!restaurant) return null;
 
-  const IMAGE_MAP = {
-    Syrian: "https://images.unsplash.com/photo-1544025162-d76694265947?w=1200&q=80",
-    Bangladeshi: "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?w=1200&q=80",
-    Turkish: "https://images.unsplash.com/photo-1561626423-a51b45aef0a1?w=1200&q=80",
-    Indian: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=1200&q=80",
-    default: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=1200&q=80",
-  };
+  const imageSrc = getCuisineImage(restaurant.cuisine);
 
-  const imageSrc = IMAGE_MAP[restaurant.cuisine] || IMAGE_MAP.default;
   const halalLabel = (restaurant.halal_status || "").trim() || "Halal status not listed";
   const hoursText = (restaurant.hours || "").trim();
   const websiteHref = websiteHrefFromCell(restaurant.website);

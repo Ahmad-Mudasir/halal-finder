@@ -1,15 +1,9 @@
-const CUISINE_IMAGES = {
-  Syrian: "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80",
-  Bangladeshi: "https://images.unsplash.com/photo-1631515243349-e0cb75fb8d3a?w=600&q=80",
-  Turkish: "https://images.unsplash.com/photo-1561626423-a51b45aef0a1?w=600&q=80",
-  Indian: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=600&q=80",
-  default: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80",
-};
+import { getCuisineImage } from "../constants/cuisineImages";
 
 const RestaurantCard = ({ restaurant, isSelected, onClick }) => {
   if (!restaurant) return null;
 
-  const image = CUISINE_IMAGES[restaurant.cuisine] || CUISINE_IMAGES.default;
+  const image = getCuisineImage(restaurant.cuisine);
   const halalShort = (restaurant.halal_status || "").trim() || "Halal";
 
   return (
